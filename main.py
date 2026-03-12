@@ -1,9 +1,13 @@
 import time
 import os
+import subprocess
 from game_of_life import Grid, Game
 
 def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    if os.name == 'nt':
+        subprocess.run(['cmd', '/c', 'cls'])
+    else:
+        subprocess.run(['clear'])
 
 def render_grid(grid: Grid):
     for y in range(grid.height):

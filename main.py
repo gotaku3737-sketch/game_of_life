@@ -5,9 +5,13 @@ from game_of_life import Grid, Game
 
 def clear_screen():
     if os.name == 'nt':
-        subprocess.run(['cmd', '/c', 'cls'])
+        # On Windows, use the absolute path to cmd.exe
+        system_root = os.environ.get('SystemRoot', 'C:\\Windows')
+        cmd_path = os.path.join(system_root, 'System32', 'cmd.exe')
+        subprocess.run([cmd_path, '/c', 'cls'])
     else:
-        subprocess.run(['clear'])
+        # On POSIX, use the absolute path to clear
+        subprocess.run(['/usr/bin/clear'])
 
 def render_grid(grid: Grid):
     for y in range(grid.height):

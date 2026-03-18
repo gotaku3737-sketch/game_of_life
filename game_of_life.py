@@ -40,13 +40,12 @@ class Grid:
         # Reset grid
         self.cells = [[False for _ in range(self.width)] for _ in range(self.height)]
 
-        placed = 0
-        while placed < num_cells:
-            x = random.randint(0, self.width - 1)
-            y = random.randint(0, self.height - 1)
-            if not self.cells[y][x]:
-                self.cells[y][x] = True
-                placed += 1
+        # Get a random sample of indices and map them to coordinates
+        selected_indices = random.sample(range(self.width * self.height), num_cells)
+
+        for index in selected_indices:
+            y, x = divmod(index, self.width)
+            self.cells[y][x] = True
 
 
 class Game:

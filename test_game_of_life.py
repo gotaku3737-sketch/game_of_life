@@ -78,3 +78,22 @@ def test_reproduction():
     game = Game(grid)
     game.next_generation()
     assert grid.get_cell(5, 5)
+
+def test_place_random_cells():
+    width, height = 10, 10
+    grid = Grid(width, height)
+    num_cells = 50
+    grid.place_random_cells(num_cells)
+
+    count = 0
+    for y in range(height):
+        for x in range(width):
+            if grid.get_cell(x, y):
+                count += 1
+
+    assert count == num_cells
+
+def test_place_random_cells_exceeds_capacity():
+    grid = Grid(10, 10)
+    with pytest.raises(ValueError):
+        grid.place_random_cells(101)

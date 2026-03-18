@@ -80,20 +80,35 @@ def test_reproduction():
     assert grid.get_cell(5, 5)
 
 def test_place_random_cells():
-    width, height = 10, 10
+    width, height = 5, 5
     grid = Grid(width, height)
-    num_cells = 50
+
+    # 1. Exactly num_cells are placed
+    num_cells = 10
     grid.place_random_cells(num_cells)
-
-    count = 0
-    for y in range(height):
-        for x in range(width):
-            if grid.get_cell(x, y):
-                count += 1
-
+    count = sum(cell for row in grid.cells for cell in row)
     assert count == num_cells
 
-def test_place_random_cells_exceeds_capacity():
-    grid = Grid(10, 10)
+    # 2. Handles 0 cells
+    grid.place_random_cells(0)
+    count = sum(cell for row in grid.cells for cell in row)
+    assert count == 0
+
+    # 3. Handles full capacity
+    max_cells = width * height
+    grid.place_random_cells(max_cells)
+    count = sum(cell for row in grid.cells for cell in row)
+    assert count == max_cells
+
+    # 4. Raises ValueError for over-capacity
     with pytest.raises(ValueError):
-        grid.place_random_cells(101)
+        grid.place_random_cells(max_cells + 1)
+
+    # 5. Ensures the grid is reset before placement
+    grid.set_cell(0, 0, True)
+    grid.set_cell(0, 1, True)
+    grid.place_random_cells(1)
+    # After placing 1 random cell, there should be exactly 1 cell alive,
+    # not 1 + whatever was there before.
+    count = sum(cell for row in grid.cells for cell in row)
+    assert count == 1

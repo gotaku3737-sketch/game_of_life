@@ -1,7 +1,10 @@
 import random
 
+DEFAULT_WIDTH = 40
+DEFAULT_HEIGHT = 40
+
 class Grid:
-    def __init__(self, width: int = 40, height: int = 40):
+    def __init__(self, width: int = DEFAULT_WIDTH, height: int = DEFAULT_HEIGHT):
         """Initializes a grid with the given width and height."""
         self.width = width
         self.height = height

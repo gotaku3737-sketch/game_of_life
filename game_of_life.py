@@ -63,15 +63,11 @@ class Game:
                 is_alive = self.grid.get_cell(x, y)
                 alive_neighbors = self.grid.count_alive_neighbors(x, y)
 
-                # Rule 1: Underpopulation - Any live cell with fewer than two live neighbours dies.
-                # Rule 2: Survival - Any live cell with two or three live neighbours lives on.
-                # Rule 3: Overpopulation - Any live cell with more than three live neighbours dies.
-                if is_alive and (alive_neighbors == 2 or alive_neighbors == 3):
-                    new_cells[y][x] = True
-
-                # Rule 4: Reproduction - Any dead cell with exactly three live neighbours becomes a live cell.
-                elif not is_alive and alive_neighbors == 3:
-                    new_cells[y][x] = True
+                # Rules of Life:
+                # 1. Survival: A live cell with 2 or 3 live neighbors survives.
+                # 2. Reproduction: A dead cell with 3 live neighbors becomes alive.
+                # 3. All other cells die or stay dead.
+                new_cells[y][x] = alive_neighbors == 3 or (is_alive and alive_neighbors == 2)
 
         # Update grid with the new state
         self.grid.cells = new_cells

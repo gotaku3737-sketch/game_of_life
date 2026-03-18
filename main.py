@@ -1,9 +1,17 @@
 import time
 import os
-from game_of_life import Grid, Game
+import subprocess
+from game_of_life import Grid, Game, DEFAULT_WIDTH, DEFAULT_HEIGHT
 
 def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    if os.name == 'nt':
+        # On Windows, use the absolute path to cmd.exe
+        system_root = os.environ.get('SystemRoot', 'C:\\Windows')
+        cmd_path = os.path.join(system_root, 'System32', 'cmd.exe')
+        subprocess.run([cmd_path, '/c', 'cls'])
+    else:
+        # On POSIX, use the absolute path to clear
+        subprocess.run(['/usr/bin/clear'])
 
 def render_grid(grid: Grid):
     for y in range(grid.height):
@@ -25,8 +33,9 @@ def main():
             return
 
         starting_cells = int(input("Enter the number of starting cells: "))
-        if starting_cells <= 0 or starting_cells > 40 * 40:
-            print("Number of starting cells must be positive and less than or equal to 1600 (40x40).")
+        max_cells = DEFAULT_WIDTH * DEFAULT_HEIGHT
+        if starting_cells <= 0 or starting_cells > max_cells:
+            print(f"Number of starting cells must be positive and less than or equal to {max_cells} ({DEFAULT_WIDTH}x{DEFAULT_HEIGHT}).")
             return
 
     except ValueError:
@@ -34,7 +43,7 @@ def main():
         return
 
     # Initialize the grid
-    grid = Grid(40, 40)
+    grid = Grid(DEFAULT_WIDTH, DEFAULT_HEIGHT)
     grid.place_random_cells(starting_cells)
 
     # Initialize game

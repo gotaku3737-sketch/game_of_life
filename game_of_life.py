@@ -1,7 +1,10 @@
 import random
 
+DEFAULT_WIDTH = 40
+DEFAULT_HEIGHT = 40
+
 class Grid:
-    def __init__(self, width: int = 40, height: int = 40):
+    def __init__(self, width: int = DEFAULT_WIDTH, height: int = DEFAULT_HEIGHT):
         """Initializes a grid with the given width and height."""
         self.width = width
         self.height = height
@@ -24,11 +27,19 @@ class Grid:
     def count_alive_neighbors(self, x: int, y: int) -> int:
         """Counts the number of alive neighbors around a cell."""
         count = 0
-        for dy in [-1, 0, 1]:
-            for dx in [-1, 0, 1]:
-                if dx == 0 and dy == 0:
-                    continue  # Skip the cell itself
-                if self.get_cell(x + dx, y + dy):
+        cells = self.cells
+
+        y_start = y - 1 if y > 0 else 0
+        y_end = y + 2 if y < self.height - 1 else self.height
+        x_start = x - 1 if x > 0 else 0
+        x_end = x + 2 if x < self.width - 1 else self.width
+
+        for iy in range(y_start, y_end):
+            row = cells[iy]
+            for ix in range(x_start, x_end):
+                if iy == y and ix == x:
+                    continue
+                if row[ix]:
                     count += 1
         return count
 
@@ -40,13 +51,12 @@ class Grid:
         # Reset grid
         self.cells = [[False for _ in range(self.width)] for _ in range(self.height)]
 
-        placed = 0
-        while placed < num_cells:
-            x = random.randint(0, self.width - 1)
-            y = random.randint(0, self.height - 1)
-            if not self.cells[y][x]:
-                self.cells[y][x] = True
-                placed += 1
+        # Get a random sample of indices and map them to coordinates
+        selected_indices = random.sample(range(self.width * self.height), num_cells)
+
+        for index in selected_indices:
+            y, x = divmod(index, self.width)
+            self.cells[y][x] = True
 
 
 class Game:
@@ -55,19 +65,41 @@ class Game:
 
     def next_generation(self):
         """Advances the game to the next generation based on Conway's Game of Life rules."""
+        grid = self.grid
+        width = grid.width
+        height = grid.height
+        cells = grid.cells
+
         # Create a new grid state to populate
-        new_cells = [[False for _ in range(self.grid.width)] for _ in range(self.grid.height)]
+        new_cells = [[False for _ in range(width)] for _ in range(height)]
 
-        for y in range(self.grid.height):
-            for x in range(self.grid.width):
-                is_alive = self.grid.get_cell(x, y)
-                alive_neighbors = self.grid.count_alive_neighbors(x, y)
+        for y in range(height):
+            y_start = y - 1 if y > 0 else 0
+            y_end = y + 2 if y < height - 1 else height
 
-                # Rules of Life:
-                # 1. Survival: A live cell with 2 or 3 live neighbors survives.
-                # 2. Reproduction: A dead cell with 3 live neighbors becomes alive.
-                # 3. All other cells die or stay dead.
-                new_cells[y][x] = alive_neighbors == 3 or (is_alive and alive_neighbors == 2)
+            for x in range(width):
+                # Count neighbors (inlined for performance)
+                alive_neighbors = 0
+                x_start = x - 1 if x > 0 else 0
+                x_end = x + 2 if x < width - 1 else width
+
+                for iy in range(y_start, y_end):
+                    row = cells[iy]
+                    for ix in range(x_start, x_end):
+                        if iy == y and ix == x:
+                            continue
+                        if row[ix]:
+                            alive_neighbors += 1
+
+                is_alive = cells[y][x]
+
+                # Rule 1-3: Survival
+                if is_alive:
+                    if 2 <= alive_neighbors <= 3:
+                        new_cells[y][x] = True
+                # Rule 4: Reproduction
+                elif alive_neighbors == 3:
+                    new_cells[y][x] = True
 
         # Update grid with the new state
-        self.grid.cells = new_cells
+        grid.cells = new_cells

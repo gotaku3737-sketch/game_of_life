@@ -21,5 +21,5 @@ if __name__ == "__main__":
     benchmark_place_random_cells(100, 100, 100)
     # Medium grid
     benchmark_place_random_cells(100, 100, 5000)
-    # Dense grid (where the while loop should struggle most)
+    # Dense grid
     benchmark_place_random_cells(100, 100, 9900)

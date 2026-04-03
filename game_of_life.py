@@ -74,23 +74,9 @@ class Game:
         new_cells = [[False for _ in range(width)] for _ in range(height)]
 
         for y in range(height):
-            y_start = y - 1 if y > 0 else 0
-            y_end = y + 2 if y < height - 1 else height
-
             for x in range(width):
-                # Count neighbors (inlined for performance)
-                alive_neighbors = 0
-                x_start = x - 1 if x > 0 else 0
-                x_end = x + 2 if x < width - 1 else width
-
-                for iy in range(y_start, y_end):
-                    row = cells[iy]
-                    for ix in range(x_start, x_end):
-                        if iy == y and ix == x:
-                            continue
-                        if row[ix]:
-                            alive_neighbors += 1
-
+                # Count neighbors using Grid method
+                alive_neighbors = grid.count_alive_neighbors(x, y)
                 is_alive = cells[y][x]
 
                 # Rule 1-3: Survival

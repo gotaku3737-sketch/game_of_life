@@ -8,6 +8,16 @@ def test_grid_initialization():
     assert not grid.get_cell(0, 0)
     assert not grid.get_cell(9, 9)
 
+def test_grid_invalid_dimensions():
+    with pytest.raises(ValueError, match="Grid dimensions must be positive integers."):
+        Grid(0, 10)
+    with pytest.raises(ValueError, match="Grid dimensions must be positive integers."):
+        Grid(10, 0)
+    with pytest.raises(ValueError, match="Grid dimensions must be positive integers."):
+        Grid(-1, 10)
+    with pytest.raises(ValueError, match="Grid dimensions must be positive integers."):
+        Grid(10, -1)
+
 def test_grid_boundaries():
     grid = Grid(10, 10)
     # Testing out-of-bounds get_cell

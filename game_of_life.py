@@ -6,6 +6,8 @@ DEFAULT_HEIGHT = 40
 class Grid:
     def __init__(self, width: int = DEFAULT_WIDTH, height: int = DEFAULT_HEIGHT):
         """Initializes a grid with the given width and height."""
+        if width <= 0 or height <= 0:
+            raise ValueError("Grid dimensions must be positive integers.")
         self.width = width
         self.height = height
         # Initialize grid with False (dead cells)

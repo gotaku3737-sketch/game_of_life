@@ -32,6 +32,17 @@ def test_set_and_get_cell():
     assert grid.get_cell(5, 5)
     assert not grid.get_cell(5, 6)
 
+def test_set_cell_out_of_bounds():
+    grid = Grid(10, 10)
+    with pytest.raises(ValueError, match=r"Coordinates \(-1, 0\) are out of bounds\."):
+        grid.set_cell(-1, 0, True)
+    with pytest.raises(ValueError, match=r"Coordinates \(10, 0\) are out of bounds\."):
+        grid.set_cell(10, 0, True)
+    with pytest.raises(ValueError, match=r"Coordinates \(0, -1\) are out of bounds\."):
+        grid.set_cell(0, -1, True)
+    with pytest.raises(ValueError, match=r"Coordinates \(0, 10\) are out of bounds\."):
+        grid.set_cell(0, 10, True)
+
 def test_count_alive_neighbors():
     grid = Grid(10, 10)
     grid.set_cell(5, 5, True) # center

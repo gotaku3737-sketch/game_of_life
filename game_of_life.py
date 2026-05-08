@@ -11,7 +11,11 @@ class Grid:
         self.width = width
         self.height = height
         # Initialize grid with False (dead cells)
-        self.cells = [[False for _ in range(self.width)] for _ in range(self.height)]
+        self.cells = self._create_empty_grid()
+
+    def _create_empty_grid(self):
+        """Creates a new empty grid (all False)."""
+        return [[False] * self.width for _ in range(self.height)]
 
     def set_cell(self, x: int, y: int, is_alive: bool):
         """Sets the state of a specific cell."""
@@ -51,7 +55,7 @@ class Grid:
             raise ValueError("Number of cells exceeds grid capacity.")
 
         # Reset grid
-        self.cells = [[False for _ in range(self.width)] for _ in range(self.height)]
+        self.cells = self._create_empty_grid()
 
         # Get a random sample of indices and map them to coordinates
         selected_indices = random.sample(range(self.width * self.height), num_cells)
@@ -73,7 +77,7 @@ class Game:
         cells = grid.cells
 
         # Create a new grid state to populate
-        new_cells = [[False for _ in range(width)] for _ in range(height)]
+        new_cells = grid._create_empty_grid()
 
         for y in range(height):
             for x in range(width):
